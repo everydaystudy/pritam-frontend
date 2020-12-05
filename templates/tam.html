@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="en">
   <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 위 3개의 메타 태그는 *반드시* head 태그의 처음에 와야합니다; 어떤 다른 콘텐츠들은 반드시 이 태그들 *다음에* 와야 합니다 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <style>
+      .table td {
+        text-align: center;   
+      }
+    </style>
+
     <title>PRI Time and Attendance Management System</title>
-
-    <!-- IE8 에서 HTML5 요소와 미디어 쿼리를 위한 HTML5 shim 와 Respond.js -->
-    <!-- WARNING: Respond.js 는 당신이 file:// 을 통해 페이지를 볼 때는 동작하지 않습니다. -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
   </head>
   <body>
     <div class="container">
@@ -31,40 +32,125 @@
                 <option>AI솔루션팀</option>
             </select>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <div class="input-group date">
                     <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
             </div>
-
         </div>
         <div class="row">
-          <div class="col-sm-7" style="height:750px;">
-            <iframe src="/tam_table" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
+          <div class="col-sm-8" style="height:750px;">
+            <!-- <iframe src="/tam_table" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe> -->
+              <div class="container">
+                <br>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">이름</th>
+                        <th scope="col">월요일 (1/2)</th>
+                        <th scope="col">화요일 (1/2)</th>
+                        <th scope="col">수요일 (1/2)</th>
+                        <th scope="col">목요일 (1/2)</th>
+                        <th scope="col">금요일 (1/2)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td data-toggle="modal" data-target="#inputModal" style="cursor: pointer;">김종환</td>
+                        <td>재택</td>
+                        <td>출근</td>
+                        <td title="안산">출장</td>
+                        <td>출근</td>
+                        <td>출근</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        
+            <!-- Modal -->
+            <div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">근태 입력</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+
+                    {% for i in range(10) %}
+
+                    {% if i == 0 %}
+                      <h6><b>이번주</b></h6>
+                      <hr>
+                    {% endif %}
+
+                    <div class="form-row">
+                      <div class="form-group col-md-3">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                      </div>
+                      <div class="form-group col-md-3">
+                      <select class="form-control" id="exampleFormControlSelect1">
+                        <option>출근</option>
+                        <option>재택</option>
+                        <option>출장</option>
+                        <option>휴가</option>
+                      </select>
+                      </div>
+                      <div class="form-group col-md-5">
+                      <select class="form-control" id="exampleFormControlSelect1">
+                        <option>평택</option>
+                        <option>창원</option>
+                        <option>오창</option>
+                        <option>안산</option>
+                        <option>마곡</option>
+                        <option>용산</option>
+                      </select>
+                      </div>
+                    </div>  
+
+                    {% if i == 4 %}
+                      <br>
+                      <h6><b>다음주</b></h6>
+                      <hr>
+                    {% endif %}
+
+                    {% endfor %}
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
           </div>
-          <div class="col-sm-5" style="height:250px;">
+          <div class="col-sm-4" style="background-color:grey; height:750px;">
             <iframe src="/today_biztrip" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
           </div>
-          <div class="col-sm-5" style="height:250px;">
+          <!-- <div class="col-sm-5" style="background-color:pink; height:250px;">
             <iframe src="/today_wfh" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
           </div>
-          <div class="col-sm-5" style="height:250px;">
+          <div class="col-sm-5" style="background-color:blue; height:250px;">
             <iframe src="/tam_chart" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
-          </div>
+          </div> -->
         </div>
     </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-    <!-- 합쳐지고 최소화된 최신 CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-
-    <!-- 부가적인 테마 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-
-    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
 
@@ -78,17 +164,9 @@
                 todayHighlight: true,
                 autoclose: true,
                 format: "yyyy/mm/dd"
-            }).datepicker("setDate", "0");
+            }).datepicker("setDate", "0");    
         });
     </script>
-
-    <script>
-        $(function() {
-            $('#myModal').someDialogPlug({ some: options });
-        })
-    </script>
-
-    <div id="myModal">stuff</div>
 
   </body>
 

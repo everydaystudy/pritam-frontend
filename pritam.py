@@ -9,19 +9,9 @@ def hello_world():
     return render_template('tam.html')
 
 
-@app.route('/tam_table')
-def tam_table():
-    return render_template('tam_table.html')
-
-
 @app.route('/today_biztrip')
 def today_biztrip():
     return render_template('today_biztrip.html')
-
-
-@app.route('/today_wfh')
-def today_wfh():
-    return render_template('today_wfh.html')
 
 
 @app.route('/tam_chart')

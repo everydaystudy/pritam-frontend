@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask import request
+from flask import request, redirect, url_for
 import requests
 import json
 import datetime
@@ -14,6 +14,9 @@ def return_date_of_week(d):
     y = d.year
 
     w = d.isocalendar()[1] - 2 # as it starts with 0 and you want week to start from sunday
+    if w < 0:
+        w = 0
+
     startdate = time.asctime(time.strptime('%d %d 0' % (y, w), '%Y %W %w')) 
     startdate = datetime.datetime.strptime(startdate, '%a %b %d %H:%M:%S %Y') 
     dates = [startdate.strftime('%Y-%m-%d')] 
@@ -59,11 +62,23 @@ def tam_main():
     response = requests.get(url_items)
     next_tam_data = json.loads(response.text)
 
+    attend_data = []
+    destn_data = []
+    for i in range(len(tam_data)):
+        attend_data.append([tam_data[i][3][0], tam_data[i][4][0], tam_data[i][5][0], tam_data[i][6][0], tam_data[i][7][0],
+                           next_tam_data[i][3][0], next_tam_data[i][4][0], next_tam_data[i][5][0], next_tam_data[i][6][0], next_tam_data[i][7][0]])
+
+        destn_data.append([tam_data[i][3][1], tam_data[i][4][1], tam_data[i][5][1], tam_data[i][6][1], tam_data[i][7][1],
+                           next_tam_data[i][3][1], next_tam_data[i][4][1], next_tam_data[i][5][1], next_tam_data[i][6][1], next_tam_data[i][7][1]])
+
+    print(tam_data)
+
     return render_template('tam.html', tam_data=tam_data, 
                                        dates=dates, 
                                        formdata=[division, team, today],
                                        inputdates=inputdates, 
-                                       next_tam_data=next_tam_data, 
+                                       attend_data=attend_data, 
+                                       destn_data=destn_data, 
                                        data_cnt=len(tam_data))
 
 
@@ -84,12 +99,12 @@ def today_info():
         today = datetime.datetime.today().strftime('%Y-%m-%d')
 
     # Business Trip Member
-    url_items = "http://127.0.0.1:8000/today_biztrip?division=%s&team=%s&today=%s" % (division, team,today)
+    url_items = "http://127.0.0.1:8000/today_biztrip?division=%s&team=%s&today=%s" % (division, team, today)
     response = requests.get(url_items)
     biztrip_lst = json.loads(response.text)
 
     # Work from Home Member
-    url_items = "http://127.0.0.1:8000/today_wfh?division=%s&team=%s&today=%s" % (division, team,today)
+    url_items = "http://127.0.0.1:8000/today_wfh?division=%s&team=%s&today=%s" % (division, team, today)
     response = requests.get(url_items)
     wfh_lst = json.loads(response.text)
 
@@ -119,6 +134,16 @@ def tam_chart():
 
     return render_template('tam_chart.html', wfh_rate_lst=wfh_rate_lst, formdata=[division, team, today])
 
+
+@app.route('/data_post', methods=['GET', 'POST'])
+def data_post():
+
+    if request.method == "POST":
+        data = request.form.to_dict(flat=True)
+
+    requests.post("http://127.0.0.1:8000/update_data", data=json.dumps(data))
+
+    return redirect(url_for('tam_main'))
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)

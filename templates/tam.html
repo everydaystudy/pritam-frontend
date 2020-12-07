@@ -65,14 +65,14 @@
                     </thead>
                     <tbody>
                       {% for i in range(data_cnt) %}
-                        <tr data-toggle="modal" data-id="{{tam_data[i]}}" data-next="{{next_tam_data[i]}}" data-target="#inputModal" class="passingID" style="cursor: pointer;">
+                        <tr data-toggle="modal" data-today="{{formdata[2]}}" data-division="{{tam_data[i][0]}}" data-team="{{tam_data[i][1]}}" data-name="{{tam_data[i][2]}}" data-attend="{{attend_data[i]}}" data-destn="{{destn_data[i]}}" data-target="#inputModal" class="passingID" style="cursor: pointer;">
                           <!-- <th scope="row">1</th> -->
                           <td >{{tam_data[i][2]}}</td>
                           <td {% if tam_data[i][3][0] == "출장" %} title="{{tam_data[i][3][1]}}" {% endif %}>{{tam_data[i][3][0]}}</td>
-                          <td {% if tam_data[i][3][0] == "출장" %} title="{{tam_data[i][3][1]}}" {% endif %}>{{tam_data[i][4][0]}}</td>
-                          <td {% if tam_data[i][3][0] == "출장" %} title="{{tam_data[i][3][1]}}" {% endif %}>{{tam_data[i][5][0]}}</td>
-                          <td {% if tam_data[i][3][0] == "출장" %} title="{{tam_data[i][3][1]}}" {% endif %}>{{tam_data[i][6][0]}}</td>
-                          <td {% if tam_data[i][3][0] == "출장" %} title="{{tam_data[i][3][1]}}" {% endif %}>{{tam_data[i][7][0]}}</td>
+                          <td {% if tam_data[i][4][0] == "출장" %} title="{{tam_data[i][4][1]}}" {% endif %}>{{tam_data[i][4][0]}}</td>
+                          <td {% if tam_data[i][5][0] == "출장" %} title="{{tam_data[i][5][1]}}" {% endif %}>{{tam_data[i][5][0]}}</td>
+                          <td {% if tam_data[i][6][0] == "출장" %} title="{{tam_data[i][6][1]}}" {% endif %}>{{tam_data[i][6][0]}}</td>
+                          <td {% if tam_data[i][7][0] == "출장" %} title="{{tam_data[i][7][1]}}" {% endif %}>{{tam_data[i][7][0]}}</td>
                         </tr>
                       {% endfor %}
                     </tbody>
@@ -89,21 +89,25 @@
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
+                  <form action="/data_post", method="POST">
                   <div class="modal-body">
-
                     {% for i in range(10) %}
-
                     {% if i == 0 %}
                       <h6><b>이번주</b></h6>
+                      <input type="hidden" id="division" name="division">
+                      <input type="hidden" id="team" name="team">
+                      <input type="hidden" id="name" name="name">
+                      <input type="hidden" id="today" name="today">
                       <hr>
                     {% endif %}
 
                     <div class="form-row">
                       <div class="form-group col-md-3">
                         <label for="staticEmail" class="col-sm-2 col-form-label">{{inputdates[i]}}</label>
+                        <input type="hidden" id="date{{i}}" name="date{{i}}" value="{{inputdates[i]}}">
                       </div>
                       <div class="form-group col-md-3">
-                      <select class="form-control" id="tamselect{{i}}">
+                      <select class="form-control" id="tamselect{{i}}" name="tamselect{{i}}">
                         <option>출근</option>
                         <option>재택</option>
                         <option>출장</option>
@@ -111,7 +115,7 @@
                       </select>
                       </div>
                       <div class="form-group col-md-5">
-                      <select class="form-control" id="destnselect{{i}}">
+                      <select class="form-control" id="destnselect{{i}}" name="destnselect{{i}}">
                         <option>해당없음</option>
                         <option>평택</option>
                         <option>창원</option>
@@ -119,6 +123,7 @@
                         <option>안산</option>
                         <option>마곡</option>
                         <option>용산</option>
+                        <option>기타</option>
                       </select>
                       </div>
                     </div>  
@@ -128,15 +133,14 @@
                       <h6><b>다음주</b></h6>
                       <hr>
                     {% endif %}
-
                     {% endfor %}
-
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                   </div>
                 </div>
+                </form>
               </div>
             </div>
 
@@ -145,14 +149,9 @@
           <div class="col-sm-4" style="height:750px;">
             <iframe id="today_info" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
           </div>
-          <!-- <div class="col-sm-5" style="background-color:pink; height:250px;">
-            <iframe src="/today_wfh" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
-          </div>
-          <div class="col-sm-5" style="background-color:blue; height:250px;">
-            <iframe src="/tam_chart" style="width:100%; height:100%; position:absolute; display:block; top:0; left:0; border:none;"></iframe>
-          </div> -->
         </div>
     </div>
+  </body>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -185,119 +184,54 @@
 
     <script>
       $(document).on("click", ".passingID", function () {
-        var ids = $(this).data('id');
 
-        // ids = ids.replace(/]/gi, '').replace('[', '').replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '').replace('[', '');
+        var division = $(this).data('division');
+        $(".modal-body #division").val(division);
 
-        // alert(ids.split(',')[3]);
+        var team = $(this).data('team');
+        $(".modal-body #team").val(team);
 
-        tamsel1 = ids.split(',')[3].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        tamsel2 = ids.split(',')[5].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        tamsel3 = ids.split(',')[7].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        tamsel4 = ids.split(',')[9].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        tamsel5 = ids.split(',')[11].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
+        var name = $(this).data('name');
+        $(".modal-body #name").val(name);
 
-        if (tamsel1 == "") {
-          tamsel1 = "출근";
-        };
-        if (tamsel2 == "") {
-          tamsel2 = "출근";
-        };
-        if (tamsel3 == "") {
-          tamsel3 = "출근";
-        };
-        if (tamsel4 == "") {
-          tamsel4 = "출근";
-        };
-        if (tamsel5 == "") {
-          tamsel5 = "출근";
-        };
+        var today = $(this).data('today');
+        $(".modal-body #today").val(today);
 
+        var attend = $(this).data('attend');
+        attend = attend.substring(1, attend.length - 1);
+        attend = attend.replace(/'/gi, '').replace(/\s/g, '');
 
-        $(".modal-body #tamselect0").val(tamsel1);
-        $(".modal-body #tamselect1").val(tamsel2);
-        $(".modal-body #tamselect2").val(tamsel3);
-        $(".modal-body #tamselect3").val(tamsel4);
-        $(".modal-body #tamselect4").val(tamsel5);
+        attend = attend.split(',');
 
-        destnselect1 = ids.split(',')[4].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        destnselect2 = ids.split(',')[6].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        destnselect3 = ids.split(',')[8].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        destnselect4 = ids.split(',')[10].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        destnselect5 = ids.split(',')[12].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
+        $(".modal-body #tamselect0").val(attend[0]);
+        $(".modal-body #tamselect1").val(attend[1]);
+        $(".modal-body #tamselect2").val(attend[2]);
+        $(".modal-body #tamselect3").val(attend[3]);
+        $(".modal-body #tamselect4").val(attend[4]);
+        $(".modal-body #tamselect5").val(attend[5]);
+        $(".modal-body #tamselect6").val(attend[6]);
+        $(".modal-body #tamselect7").val(attend[7]);
+        $(".modal-body #tamselect8").val(attend[8]);
+        $(".modal-body #tamselect9").val(attend[9]);
+        
+        var destn = $(this).data('destn');
+        destn = destn.substring(1, destn.length - 1);
+        destn = destn.replace(/'/gi, '').replace(/\s/g, '');
 
-        if (destnselect1 == "") {
-          destnselect1 = "해당없음";
-        };
+        destn = destn.split(',');
 
-        if (destnselect2 == "") {
-          destnselect2 = "해당없음";
-        };
-
-        if (destnselect3 == "") {
-          destnselect3 = "해당없음";
-        };
-
-        if (destnselect4 == "") {
-          destnselect4 = "해당없음";
-        };
-
-        if (destnselect5 == "") {
-          destnselect5 = "해당없음";
-        };
-
-        $(".modal-body #destnselect0").val(destnselect1);
-        $(".modal-body #destnselect1").val(destnselect2);
-        $(".modal-body #destnselect2").val(destnselect3);
-        $(".modal-body #destnselect3").val(destnselect4);
-        $(".modal-body #destnselect4").val(destnselect5);
-
-        var next = $(this).data('next');
-
-        // alert(next.split(',').length);
-
-        next = next.replace(/]/gi, '').replace('[', '').replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '').replace('[', '')
-
-        // tamsel6 = next.split(',')[3].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // tamsel7 = next.split(',')[5].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // tamsel8 = next.split(',')[7].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // tamsel9 = next.split(',')[9].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // tamsel10 = next.split(',')[11].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-
-        // if (tamsel6 == "") {
-        //   tamsel6 = "출근";
-        // };
-        // if (tamsel7 == "") {
-        //   tamsel7 = "출근";
-        // };
-        // if (tamsel8 == "") {
-        //   tamsel8 = "출근";
-        // };
-        // if (tamsel9 == "") {
-        //   tamsel9 = "출근";
-        // };
-        // if (tamsel10 == "") {
-        //   tamsel10 = "출근";
-        // };
-
-        // $(".modal-body #tamselect6").val(tamsel6);
-        // $(".modal-body #tamselect7").val(tamsel7);
-        // $(".modal-body #tamselect8").val(tamsel8);
-        // $(".modal-body #tamselect9").val(tamsel9);
-        // $(".modal-body #tamselect10").val(tamsel10);
-
-        // destnselect6 = next.split(',')[4].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // destnselect7 = next.split(',')[6].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // destnselect8 = next.split(',')[8].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // destnselect9 = next.split(',')[10].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-        // destnselect10 = next.split(',')[12].replace('[', '').replace(']', '').replace("'", '').replace("'", '').replace(/\s/g, '');
-
-        // alert(tamsel10);
-
+        $(".modal-body #destnselect0").val(destn[0]);
+        $(".modal-body #destnselect1").val(destn[1]);
+        $(".modal-body #destnselect2").val(destn[2]);
+        $(".modal-body #destnselect3").val(destn[3]);
+        $(".modal-body #destnselect4").val(destn[4]);
+        $(".modal-body #destnselect5").val(destn[5]);
+        $(".modal-body #destnselect6").val(destn[6]);
+        $(".modal-body #destnselect7").val(destn[7]);
+        $(".modal-body #destnselect8").val(destn[8]);
+        $(".modal-body #destnselect9").val(destn[9]);
       });
     </script>
-
-  </body>
 
 
 </html>

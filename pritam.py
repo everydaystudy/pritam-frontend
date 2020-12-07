@@ -31,7 +31,7 @@ def return_date_of_week(d):
     return dates
 
 
-@app.route('/tam', methods=['GET', 'POST'])
+@app.route('/tams', methods=['GET', 'POST'])
 def tam_main():
 
     division = request.args.get('division')

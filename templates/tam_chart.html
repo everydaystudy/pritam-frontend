@@ -79,14 +79,27 @@ Highcharts.chart('container', {
     },
     yAxis: {
         min: 0,
+        max: 100,
         title: {
             text: ''
-        }
+        },
+        plotLines: [{
+            color: 'red',
+            width: 1,
+            value: 70
+        },{
+            color: 'orange',
+            width: 2,
+            value: 50
+        },{
+            color: 'green',
+            width: 1,
+            value: 30
+        }]
     },
     tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        pointFormat: '<tr><td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -95,12 +108,17 @@ Highcharts.chart('container', {
         column: {
             pointPadding: 0.2,
             borderWidth: 0
+        },
+        series: {
+            dataLabels: {
+                enabled: true
+            }
         }
     },
     series: [{
         name: 'Tokyo',
         showInLegend: false,  
-        data: [49.9, 71.5, 106.4, 129.2, 144.0]
+        data: {{wfh_rate_lst}}//[49.9, 71.5, 106.4, 129.2, 144.0]
 
     }]
 });
